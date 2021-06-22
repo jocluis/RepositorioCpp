@@ -3,7 +3,9 @@
 //
 
 #include <iostream>
-#include <string>
+
+using namespace std;
+
 
 //Nodo
 template<typename E> class Nodo{
@@ -19,6 +21,7 @@ public:
         this->izquierda = izq;
     }
     Nodo(Nodo* der=NULL,Nodo* izq=NULL){
+        this->elemento = NULL;
         this->derecha = der;
         this->izquierda = izq;
     }
@@ -38,78 +41,126 @@ public:
 template<typename E>
 class ArbolBinarioNodo : ArbolBinario<E>{
 private:
-    Nodo<E *> *arbol; //cabeza del arbol;
+    Nodo<E *> *arbol; //arbol;
     int tam;//elementos que realmente estan dentro del arbol binario
 
 public:
     ArbolBinarioNodo(){
-        //this->arbol =new Nodo<E *>;
-        this->arbol = NULL;
+        inicializar();
+    }
+    ~ArbolBinarioNodo(){
+        eliminarTodo();
+    }
+    void inicializar()
+    {
+        this->arbol =new Nodo<E *>;
         this->tam=0;
     }
-
-    ~ArbolBinarioNodo(){
-
-    }
-    void insertar(E e)
+    void eliminarTodo()
     {
-
-        if(this->arbol == NULL)
+        if(this->arbol->derecha == NULL && this->arbol->izquierda == NULL)
         {
-            *arbol =  new Nodo<E *>(new E(e), NULL, NULL);
+            delete arbol;
         }
         else
         {
-            int raiz_tmp= reinterpret_cast<int>(this->arbol->elemento);
-            int e_tmp= reinterpret_cast<int>(new int(e));
-            if(e_tmp < raiz_tmp) //izquierda
-            {
-                this->arbol = this->arbol->izquierda;
-                insertar(e);
-            }
-            else //derecha
-            {
-                this->arbol = this->arbol->derecha;
-                insertar(e);
-            }
+            delete arbol->derecha;
+            delete arbol->izquierda;
+            delete arbol;
         }
     }
-    void crearNodoArbol(E e)
+    //Limpiar el arbol: dejarla vacia el arbol
+    void limpiar()
     {
+        eliminarTodo();
+        inicializar();
     }
-    void insertar_old(E e){
-
-        if(this->raiz == NULL)
+    void insertar(E e)
+    {
+        insertar(this->arbol,e); //metodo recursivo
+    }
+    void insertar(Nodo<E*> *&arbolNodo, E e)
+    {
+        if(arbolNodo->derecha == NULL && arbolNodo->izquierda == NULL && arbolNodo->elemento== NULL)
         {
-             this->raiz->elemento = new E(e);
-        }else
+            arbolNodo->elemento = new E(e);
+            arbolNodo->derecha = new Nodo<E *>;
+            arbolNodo->izquierda = new Nodo<E *>;
+            this->tam++;
+        }
+        else
         {
-            int raiz_tmp= reinterpret_cast<int>(this->raiz->elemento);
-            int e_tmp= reinterpret_cast<int>(new int(e));
-
-            if(e_tmp < raiz_tmp) //izquierda
+            int raiz_tmp= *arbolNodo->elemento;
+            int e_tmp= e;
+            if(e_tmp < raiz_tmp) //izquierda (menores que la raiz)
             {
-                    this->raiz->izquierda = new Nodo<E *>(new E(e),NULL,NULL);
+                insertar(arbolNodo->izquierda,e);
             }
-            else //derecha
+            else //derecha (mayores que la raiz)
             {
-                this->raiz->derecha = new Nodo<E *>(new E(e),NULL,NULL);
-
+                insertar(arbolNodo->derecha,e);
             }
         }
     }
-    E encontrar(E e){}
+    E encontrar(E e){
+        bool encontrado=false;
+        encontrado=encontrar(this->arbol,e); //metodo recursivo
+        if(encontrado) return e;
+        else return -1; //no encontrado
+    }
+    bool encontrar(Nodo<E*> *&arbolNodo, E e)
+    {
+        if(arbolNodo->derecha == NULL && arbolNodo->izquierda == NULL && arbolNodo->elemento== NULL)
+        {
+            return false;
+        }
+        else
+        {
+            int raiz_tmp= *arbolNodo->elemento;
+            int e_tmp= e;
+            if(e_tmp <= raiz_tmp) //izquierda (menores que la raiz)
+            {
+                if(e_tmp == raiz_tmp) return true;
+                encontrar(arbolNodo->izquierda,e);
+            }
+            else //derecha (mayores que la raiz)
+            {
+                encontrar(arbolNodo->derecha,e);
+            }
+        }
+    }
     int longitud(){
         return this->tam;
     }
-
-
 };
 
 
 int main()
 {
+    /*Se inserta un arbol
+     *                      13
+     *              7                15
+     *      6           9       14          20
+     *                                  19         22
+     * */
     ArbolBinarioNodo<int> *arbol= new ArbolBinarioNodo<int>;
-    arbol->insertar(3);
+    arbol->insertar(13);
+    arbol->insertar(7);
+    arbol->insertar(15);
+    arbol->insertar(20);
+    arbol->insertar(22);
+    arbol->insertar(9);
+    arbol->insertar(6);
+    arbol->insertar(14);
+    arbol->insertar(19);
+
+    cout<<"Se ingresaron correctamente los datos."<<endl<<endl;
+    cout<<"El arbol contiene el valor 22: Valor encontrado: "<<arbol->encontrar(22)<<endl;
+
+
+
+
+    delete arbol;
+
     return 0;
 }
