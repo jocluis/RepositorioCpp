@@ -170,6 +170,34 @@ public:
         this->tamLista--;
         return eliminado;
     }
+
+    //Retorna el valor que estaba en la posicion "pos"
+    E getValor(int pos)
+    {
+        return this->arreglo[pos];
+    }
+    void ordenarListaInt()
+    {
+        int pos,aux;
+        for(this->moverAInicio(); //Inicializacion
+            this->posicionActual()<this->longitud(); //Condicion de parada
+            this->siguiente()){ //Incremento
+            pos = this->posicionActual();
+            aux = this->getValor();
+            //cout<<"posicion:"<<lista->posicionActual()<<endl;
+
+            while((pos>0) && ((int)this->getValor(pos-1)>aux))
+            {
+                this->setValor((int)this->getValor(pos-1));
+                pos--;
+            }
+            this->moverAPosicion(pos);
+            this->setValor(aux);
+
+            this->moverAPosicion(pos);
+
+        }
+    }
 };
 
 /*

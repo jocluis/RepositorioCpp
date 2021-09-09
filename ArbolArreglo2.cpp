@@ -1,7 +1,9 @@
+//
+// Created by jcasiano on 30/6/2021.
+//
+
 #include <iostream>
-
 using namespace std;
-
 
 //Clase Padre: Lista
 template <typename E>
@@ -107,6 +109,17 @@ public:
         this->arreglo[this->tamLista++] = elemento;
     }
 
+    void agregarOrdenadamente(E elemento)
+    {
+        for (int i = 0; this->tamLista; i++)
+            if (this->arreglo[i] >= elemento)
+            {
+                this->moverAPosicion(i);
+                this->insertar(elemento);
+                break;
+            }
+    }
+
     //Retornar le numero de elementos de la lista
     int longitud()
     {
@@ -186,7 +199,7 @@ public:
     virtual void insertar(E e) = 0;
     virtual E encontrar(E e) = 0;
     virtual int longitud()=0;
-    virtual void eliminar(E e)=0;
+    virtual int eliminar(E e)=0;
 };
 
 template<typename E>
@@ -262,7 +275,6 @@ public:
         }
 
         int pos = this->obtenerPosicion(e, 0);
-        cout<<"posicion: "<<pos<<endl;
         this->arreglo->moverAPosicion(pos);
         return this->arreglo->getValor();
     };
@@ -271,11 +283,8 @@ public:
     int longitud() {
         return this->arreglo->longitud();
     };
-    void eliminar(E e)
-    {
 
-    }
-     void imprimirArreglo() {
+    void imprimirArreglo() {
         this->arreglo->moverAInicio();
         for (this->arreglo->moverAInicio(); this->arreglo->posicionActual() <longitud(); this->arreglo->siguiente())
         {
@@ -283,14 +292,111 @@ public:
         }
     };
 
+    ListaArreglo<E >* obtenerHijosOrdenados(int pos, ListaArreglo<E > *&lista) {
+        if (pos > this->longitud())
+        {
+            return lista;
+        }
+
+        this->arreglo->moverAPosicion(pos);
+
+        int posIzq = (2 * pos) + 1; //izquierda
+        this->arreglo->moverAPosicion(posIzq);
+        if (this->arreglo->getValor() != 0) {
+            lista->agregarOrdenadamente(this->arreglo->getValor());
+            cout <<"Se agregó: "<<this->arreglo->getValor()<<endl;
+            obtenerHijosOrdenados(posIzq, lista);
+        }
+
+        this->arreglo->moverAPosicion(pos);
+        int posDer = (2 * pos) + 2; //derecha
+        this->arreglo->moverAPosicion(posDer);
+        if (this->arreglo->getValor() != 0) {
+            lista->agregarOrdenadamente(this->arreglo->getValor());
+            cout <<"Se agregó: "<<this->arreglo->getValor()<<endl;
+            obtenerHijosOrdenados(posDer, lista);
+        }
+    }
+
+    void subArboles(int pos, ListaArreglo<E > *&lista)
+    {
+
+    }
+
+    int eliminar(E e)
+    {
+        int hijos = 0;
+        int pos = this->obtenerPosicion(e, 0);
+
+        int posIzq = (2 * pos) + 1; //izquierda
+        this->arreglo->moverAPosicion(posIzq);
+        bool hijoIzqVacio = false;
+        if(this->arreglo->getValor() != 0) {
+            hijos++;
+        }
+
+        int posDer = (2 * pos) + 2; //derecha
+        this->arreglo->moverAPosicion(posDer);
+        bool hijoDerVacio = false;
+        if(this->arreglo->getValor() != 0) {
+            hijos++;
+        }
+
+        // es hoja
+        if (hijos == 0)
+        {
+            this->arreglo->moverAPosicion(pos);
+            this->arreglo->insertar(0);
+            return pos;
+        }
+
+        // es hoja
+        cout << "ES NODO HOJA"<<endl;
+        ListaArreglo<E> *hijosOrdenados = new ListaArreglo<E>();
+        this->obtenerHijosOrdenados(pos, hijosOrdenados);
+        // TODO: buscar medianas y reemplazar nodos
+        //insertarpormediana_recursivo(pos,hijosOrdenados);
+        return -1;
+    }
 };
 
+int main()
+{
+
+    // ejemploArbol();
+    /*Se inserta un arbol
+ *                      13
+ *              7                15
+ *      6           9       14          20
+ *                                  19         22
+ * */
+
+    ArbolBinarioArreglo<int> *arbol = new ArbolBinarioArreglo<int>;
+    // 13, 7, 15, 20, 22, 9, 6, 14, 19
+    arbol->insertar(13);
+    arbol->insertar(7);
+    arbol->insertar(15);
+    arbol->insertar(20);
+    arbol->insertar(22);
+    arbol->insertar(9);
+    arbol->insertar(6);
+    arbol->insertar(14);
+    arbol->insertar(19);
+
+    arbol->imprimirArreglo();
 
 
-/*
-int main() {
+    /*Eliminar 22
+ *                      13
+ *              7                15
+ *      6           9       14          20
+ *                                  19
+   * */
 
+
+    cout <<"======= Eliminar elemento =========="<<endl;
+    arbol->eliminar(22);
+    arbol->imprimirArreglo();
 
     return 0;
 }
- */

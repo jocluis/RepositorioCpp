@@ -1,6 +1,3 @@
-#include <iostream>
-using namespace std;
-
 //Clase Padre: Lista
 template <typename E>
 class Lista
@@ -187,12 +184,13 @@ public:
     }
 };
 
-
-template<typename Key, typename E> class Diccionario{
+template <typename Key, typename E>
+class Diccionario
+{
 private:
 public:
-    Diccionario(){} //Constructor
-    ~Diccionario(){} //Destructor
+    Diccionario() {}  //Constructor
+    ~Diccionario() {} //Destructor
 
     //Reinicializacion de un diccionario
     virtual void limpiar() = 0;
@@ -209,7 +207,6 @@ public:
     //Retornar NULL si la clave "K" no se encuentra en el diccionario
     virtual E remover(Key K) = 0;
 
-
     //Remover y retornar un registro arbitrario del diccionario
     //Retornar: el registro que ha sido removido o NULL si no existe
     virtual E removerCualquiera() = 0;
@@ -223,55 +220,74 @@ public:
     virtual int longitud() = 0;
 };
 
-
-template<typename Key, typename E> class KVPar{
+template <typename Key, typename E>
+class KVPar
+{
 private:
     Key k;
     E e;
+
 public:
     //Constructor
-    KVPar(){}
-    KVPar(Key kval, E eval){this->k = kval; this->e = eval;}
-    KVPar(KVPar& o){ this->k = o.k; this->e = o.e; }
+    KVPar() {}
 
-    Key key(){
+    KVPar(Key kval, E eval)
+    {
+        this->k = kval;
+        this->e = eval;
+    }
+
+    KVPar(KVPar &o)
+    {
+        this->k = o.k;
+        this->e = o.e;
+    }
+
+    Key key()
+    {
         return this->k;
     }
 
-    void setKey(Key ink){
+    void setKey(Key ink)
+    {
         this->k = ink;
     }
 
-    E valor(){
+    E valor()
+    {
         return this->e;
     }
 };
 
-
-template<typename Key, typename E>
-class DiccionarioArreglo : public Diccionario<Key, E>{
+template <typename Key, typename E>
+class DiccionarioArreglo : public Diccionario<Key, E>
+{
 private:
-    ListaArreglo<KVPar<Key, E>> *lista;
-public:
+    ListaArreglo<KVPar<Key, E> > *lista;
 
-    DiccionarioArreglo() {
-        this->lista = new ListaArreglo<KVPar<Key, E>>();
+public:
+    DiccionarioArreglo()
+    {
+        this->lista = new ListaArreglo<KVPar<Key, E> >();
     }
 
-    ~DiccionarioArreglo() {
+    ~DiccionarioArreglo()
+    {
         delete[] this->lista;
     }
 
     //Reinicializacion de un diccionario
-    void limpiar() {
+    void limpiar()
+    {
         delete[] this->lista;
-        this->lista = new ListaArreglo<KVPar<Key, E>>();
+        this->lista = new ListaArreglo<KVPar<Key, E> >();
     };
 
     //Insertar un registro
     //k: la clave para el reigstro
     //e: el registro
-    void insertar(Key K, E e) {
+    void insertar(Key K, E e)
+    {
         this->lista->insertar(*new KVPar<Key, E>(K, e));
     };
 
@@ -280,58 +296,69 @@ public:
     //Retornar: un registro. Si hay mas de un registro con la misma clave,
     //  se debe remover uno de manera arbitraria
     //Retornar NULL si la clave "K" no se encuentra en el diccionario
-    E remover(Key K) {
+    E remover(Key K)
+    {
         return "";
     };
 
-
     //Remover y retornar un registro arbitrario del diccionario
     //Retornar: el registro que ha sido removido o NULL si no existe
-    E removerCualquiera() {
-        return (this->lista->eliminar()).valor();
+    E removerCualquiera()
+    {
+        KVPar<int, string> *elem = new KVPar<int, string>();
+        *elem = this->lista->eliminar();
+        return elem->valor();
     };
 
     //Return: un registro o NULL si no existe
     //Si hay multiples registros, se debe retornar uno de manera aleatoria
     //K: la clave del registro a encontrar
-    E encontrar(Key K) {
-        this->lista->moverAInicio();
-        int i=0;
-        while (this->lista->getValor().key()!=K && this->longitud()!=i){
-            this->lista->siguiente();
-            i++;
-        }
-        if (this->longitud()<i){
-            return NULL;
-        } else {
-            return this->lista->getValor().valor();
-        }
+    E encontrar(Key K)
+    {
+        return "";
     };
 
     //Retornar el número de registros dentro del diccionario
-    int longitud() {
+    int longitud()
+    {
         int length = this->lista->longitud();
         return length;
     };
+
+    void hash(E valor)
+    {
+        switch (typeid(valor).name)
+        {
+            case '':
+                /* code */
+                break;
+
+            default:
+                break;
+        }
+        this->insertar(, valor);
+    }
 };
 
+int main()
+{
+    DiccionarioArreglo<int, string> *diccionario = new DiccionarioArreglo<int, string>;
+    diccionario->hash("Luis");
+    diccionario->hash("Maria");
+    diccionario->hash("Juan");
 
-int main() {
-    DiccionarioArreglo<int, string> *diccionario = new  DiccionarioArreglo<int, string>;
-    diccionario->insertar(3912, "Luis");
-    diccionario->insertar(2918, "Maria");
-    diccionario->insertar(16881, "Juan");
-    cout<<"Reportando Contenido de Diccionario"<<endl;
-    cout<<"Elemento: "<<diccionario->encontrar(2918)<<endl;//reporta: Maria
-    cout<<"Reportando Todos los elementos del Diccionario"<<endl;
+    cout << "Reportando Contenido de Diccionario" << endl;
+    cout << "Elemento: " << diccionario->encontrar(2918) << endl; //reporta: Maria
+    cout << "Reportando Todos los elementos del Diccionario" << endl;
     /*
-    Reporta:
-    Juan
-    Maria
-    Luis
-    */
-    while(diccionario->longitud()>=0){
-        cout<<diccionario->removerCualquiera()<<endl;
+  Reporta:
+  Juan
+  Maria
+  Luis
+  */
+    while (diccionario->longitud() > 0)
+    {
+        cout << diccionario->removerCualquiera() << endl;
     }
     return 0;
 }

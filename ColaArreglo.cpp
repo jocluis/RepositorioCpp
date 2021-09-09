@@ -4,6 +4,8 @@
 //Clase 6
 
 #include <iostream>
+#include "PilasArreglo.cpp"
+
 using namespace std;
 
 //clase abstracta cola
@@ -66,6 +68,13 @@ public:
         this->elemFin++;
     }
 
+    void encolarPrioridad(E val){
+        if(this->longitud()==0)
+            this->encolar(val);
+        else
+            prioridad(val);
+    }
+
     E desencolar(){
         E val = this->listaArreglo[frente];
         this->frente++;
@@ -89,13 +98,43 @@ public:
         this->elemFin=0;
         //this->listaArreglo[this->frente]=NULL;
     }
-
+    void prioridad(E val)
+    {
+        APila<int> *pilaAux = new APila<int>;
+        E *auxArr= new E[this->longitud()];
+        int unico=1;
+        auxArr=this->listaArreglo;
+        for(int i=this->elemFin;i>0;i--)
+        {
+            if(val < auxArr[i])
+            {
+                pilaAux->push(auxArr[i]);
+            } else
+            {
+                if(unico==1)
+                {
+                    pilaAux->push(val);
+                    unico++;
+                }
+                pilaAux->push(auxArr[i]);
+            }
+        }
+        if(unico==1)
+        {
+            pilaAux->push(val);
+        }
+        this->clear();
+        while(pilaAux->longitud()>0){
+            this->encolar(pilaAux->valorTop());
+            pilaAux->pop();
+        }
+    }
 
 };
 
 
-int main() {
-
+void encolar()
+{
     ACola<int> *Colatest = new ACola<int>();
 
     Colatest->encolar(10);
@@ -110,10 +149,42 @@ int main() {
      * 10
      */
 
+
+   while(Colatest->longitud()>0){
+        cout<<Colatest->desencolar()<<endl;
+    }
+    delete Colatest;
+}
+
+void encolarconPrioridad()
+{
+    ACola<int> *Colatest = new ACola<int>();
+
+    Colatest->encolarPrioridad(124);
+    Colatest->encolarPrioridad(0);
+    Colatest->encolarPrioridad(233);
+    Colatest->encolarPrioridad(412);
+    Colatest->encolarPrioridad(1);
+
+    /*
+     * Debe reportarse en pantalla:
+     * 40
+     * 30
+     * 20
+     * 10
+     */
+
     while(Colatest->longitud()>0){
         cout<<Colatest->desencolar()<<endl;
     }
     delete Colatest;
+}
+
+int main() {
+    //1. encolar normal
+    //encolar();
+    //2. encolar con prioridad
+    encolarconPrioridad();
     return 0;
 }
 

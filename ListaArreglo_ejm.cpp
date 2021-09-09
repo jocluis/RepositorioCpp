@@ -29,6 +29,23 @@ void casoInsertar(){
         cout<<"Elemento: "<<lista->getValor()<<endl;
 
     }
+
+    lista->ordenarListaInt();
+    //Reportar Ordenar
+    /*
+     * Deberia reportar:
+     * 18
+     * 38
+     * 23
+     * 25
+     * */
+    for(lista->moverAInicio(); //Inicializacion
+        lista->posicionActual()<lista->longitud(); //Condicion de parada
+        lista->siguiente()){ //Incremento
+
+        cout<<"Elemento ordenado: "<<lista->getValor()<<endl;
+
+    }
     delete lista;
 }
 
@@ -67,7 +84,7 @@ int main ()
     casoInsertar();
     cout<<endl<<endl;
     cout<<"2. Caso Eliminar"<<endl;
-    casoEliminar();
+    //casoEliminar();
     return 0;
 
 }

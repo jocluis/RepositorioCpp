@@ -33,12 +33,30 @@ void problema2()
         arbol->insertar(dato);
     }
 }
+void eliminar()
+{
+    ArbolBinarioArreglo<int> *arbol = new ArbolBinarioArreglo<int>;
 
+    // 13, 7, 15, 20, 22, 9, 6, 14, 19
+    arbol->insertar(13);
+    arbol->insertar(7);
+    arbol->insertar(15);
+    arbol->insertar(20);
+    arbol->insertar(22);
+    arbol->insertar(9);
+    arbol->insertar(6);
+    arbol->insertar(14);
+    arbol->insertar(19);
+
+    arbol->imprimirArreglo();
+    cout<<"--"<<arbol->encontrar(20)<<endl;
+}
 int main()
 {
 
     //ejemploArbol();
-    problema2();
+    //problema2();
+    eliminar();
 
     return 0;
 }

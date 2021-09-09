@@ -1,6 +1,8 @@
 //
 // Created by jcasiano on 19/6/2021.
 //
+// Creación de Clase Arbol Binario basado en nodos
+//
 
 #include <iostream>
 
@@ -154,7 +156,8 @@ int main()
     arbol->insertar(14);
     arbol->insertar(19);
 
-    cout<<"Se ingresaron correctamente los datos."<<endl<<endl;
+
+    cout<<"Se ingresaron correctamente los datos. Cantidad: "<<arbol->longitud()<<endl<<endl;
     cout<<"El arbol contiene el valor 22: Valor encontrado: "<<arbol->encontrar(22)<<endl;
 
 
